@@ -28,35 +28,30 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+    // ================= SECURITY FILTER CHAIN =================
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
 
         http
-
-            // CORS Configuration
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-            // Disable CSRF
             .csrf(AbstractHttpConfigurer::disable)
 
-            // Disable Default Login and HTTP Basic
             .httpBasic(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
 
-            // Stateless Session
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            // Unauthorized Response
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint(
                     new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
                 )
             )
 
-            // Authorization Rules
             .authorizeHttpRequests(auth -> auth
 
                 // Allow OPTIONS requests
@@ -68,23 +63,23 @@ public class SecurityConfig {
                 // Public Authentication APIs
                 .requestMatchers("/api/auth/**").permitAll()
 
-                // Only ADMIN can access Admin APIs
+                // Admin APIs
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
-                // Only ADMIN can access Account Opening Admin APIs
-                .requestMatchers("/api/account-opening/admin/**").hasRole("ADMIN")
+                // Admin Account Opening APIs
+                .requestMatchers("/api/account-opening/admin/**")
+                .hasRole("ADMIN")
 
-                // Only ADMIN can Freeze / Unfreeze Accounts
+                // Admin Freeze / Unfreeze Accounts
                 .requestMatchers(
                     HttpMethod.PATCH,
                     "/api/accounts/*/status"
                 ).hasRole("ADMIN")
 
-                // All Other APIs Require Authentication
+                // Remaining APIs require authentication
                 .anyRequest().authenticated()
             )
 
-            // Add JWT Authentication Filter
             .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
@@ -93,29 +88,43 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // CORS Configuration
+    // ================= CORS CONFIGURATION =================
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(
-        	    List.of(
-        	        "http://localhost:5173",
-        	        "https://bank-management-frontend-ten.vercel.app",
-        	        "https://bank-management-frontend-cq36ojy71-todos-list.vercel.app"
-        	    )
-        	);
+        // Allowed Frontend Origins
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:5173",
+            "https://bank-management-frontend-ten.vercel.app"
+        ));
 
-        configuration.setAllowedMethods(
-            List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-        );
+        // Allowed HTTP Methods
+        configuration.setAllowedMethods(List.of(
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE",
+            "OPTIONS"
+        ));
 
-        configuration.setAllowedHeaders(
-            List.of("Authorization", "Content-Type")
-        );
+        // Allowed Headers
+        configuration.setAllowedHeaders(List.of(
+            "Authorization",
+            "Content-Type",
+            "Accept",
+            "Origin",
+            "X-Requested-With"
+        ));
 
+        // Allow Credentials
         configuration.setAllowCredentials(true);
+
+        // Cache Preflight Response
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
@@ -125,7 +134,8 @@ public class SecurityConfig {
         return source;
     }
 
-    // Prevent JWT Filter from Being Registered Twice
+    // ================= JWT FILTER REGISTRATION =================
+
     @Bean
     public FilterRegistrationBean<JWTAuthenticationFilter>
             jwtFilterRegistration(JWTAuthenticationFilter filter) {

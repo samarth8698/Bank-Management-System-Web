@@ -19,7 +19,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    // Customer Registration
+    // ================= REGISTER =================
     @PostMapping("/register")
     public ResponseEntity<Customer> register(
             @RequestBody Customer customer) {
@@ -32,29 +32,36 @@ public class AuthController {
         return ResponseEntity.ok(registeredCustomer);
     }
 
-    // Customer Login
+    // ================= LOGIN =================
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(
+    public ResponseEntity<Map<String, Object>> login(
             @RequestBody Customer loginRequest) {
 
+        String email = loginRequest.getEmail()
+                .trim()
+                .toLowerCase();
+
+        // Generate JWT Token
         String token = authService.loginCustomer(
-                loginRequest.getEmail(),
+                email,
                 loginRequest.getPassword()
         );
 
-        String role = authService.getUserRole(
-                loginRequest.getEmail()
-        );
+        // Fetch Customer Details
+        Customer customer = authService.getCustomerByEmail(email);
 
+        // Login Response
         return ResponseEntity.ok(
                 Map.of(
                         "token", token,
-                        "role", role
+                        "role", customer.getRole(),
+                        "customerId", customer.getId(),
+                        "email", customer.getEmail()
                 )
         );
     }
 
-    // Forgot Password - Send OTP
+    // ================= FORGOT PASSWORD =================
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(
             @RequestBody Map<String, String> request) {
@@ -64,11 +71,14 @@ public class AuthController {
         authService.sendPasswordResetOTP(email);
 
         return ResponseEntity.ok(
-                Map.of("message", "OTP sent successfully to your email!")
+                Map.of(
+                        "message",
+                        "OTP sent successfully to your email!"
+                )
         );
     }
 
-    // Verify OTP
+    // ================= VERIFY OTP =================
     @PostMapping("/verify-otp")
     public ResponseEntity<Map<String, String>> verifyOTP(
             @RequestBody Map<String, String> request) {
@@ -79,11 +89,14 @@ public class AuthController {
         authService.verifyPasswordResetOTP(email, otp);
 
         return ResponseEntity.ok(
-                Map.of("message", "OTP verified successfully!")
+                Map.of(
+                        "message",
+                        "OTP verified successfully!"
+                )
         );
     }
 
-    // Reset Password
+    // ================= RESET PASSWORD =================
     @PostMapping("/reset-password")
     public ResponseEntity<Map<String, String>> resetPassword(
             @RequestBody Map<String, String> request) {
@@ -94,7 +107,10 @@ public class AuthController {
         authService.resetPassword(email, newPassword);
 
         return ResponseEntity.ok(
-                Map.of("message", "Password reset successfully!")
+                Map.of(
+                        "message",
+                        "Password reset successfully!"
+                )
         );
     }
 }

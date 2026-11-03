@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,6 @@ public class AuthService {
     private final EmailService emailService;
     private final OTPService otpService;
 
-    // Verified OTP customers
     private final Map<String, LocalDateTime> verifiedEmails =
             new ConcurrentHashMap<>();
 
@@ -46,25 +46,37 @@ public class AuthService {
         this.otpService = otpService;
     }
 
-    // Customer Registration
+    // ================= REGISTER CUSTOMER =================
+
     public Customer registerCustomer(Customer customer) {
 
-        if (customerRepository.findByEmail(customer.getEmail()).isPresent()) {
+        if (customer.getEmail() == null
+                || customer.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("Email is required!");
+        }
+
+        String email = customer.getEmail()
+                .trim()
+                .toLowerCase();
+
+        if (customerRepository
+                .findByEmailIgnoreCase(email)
+                .isPresent()) {
+
             throw new RuntimeException("Email already registered!");
         }
 
-        String encodedPassword =
-                passwordEncoder.encode(customer.getPassword());
+        customer.setEmail(email);
 
-        customer.setPassword(encodedPassword);
+        customer.setPassword(
+                passwordEncoder.encode(customer.getPassword()));
 
-        // Always assign CUSTOMER role
-        // Prevent users from registering as ADMIN
         customer.setRole("CUSTOMER");
 
-        Customer savedCustomer = customerRepository.save(customer);
+        Customer savedCustomer =
+                customerRepository.save(customer);
 
-        // Send Welcome Email after successful database commit
+        // Send Welcome Email After Transaction Commit
         TransactionSynchronizationManager.registerSynchronization(
                 new TransactionSynchronization() {
 
@@ -72,127 +84,215 @@ public class AuthService {
                     public void afterCommit() {
 
                         try {
-                            String name = savedCustomer.getFirstName();
 
                             emailService.sendWelcomeEmail(
                                     savedCustomer.getEmail(),
-                                    name
-                            );
+                                    savedCustomer.getFirstName());
 
                             logger.info(
                                     "Welcome email sent to {}",
-                                    savedCustomer.getEmail()
-                            );
+                                    savedCustomer.getEmail());
 
                         } catch (Exception e) {
 
                             logger.error(
-                                    "Welcome email failed for {}",
-                                    savedCustomer.getEmail(),
-                                    e
-                            );
+                                    "Welcome email failed",
+                                    e);
                         }
                     }
-                }
-        );
+                });
 
         return savedCustomer;
     }
 
-    // Customer Login
-    public String loginCustomer(String email, String password) {
+    // ================= LOGIN CUSTOMER =================
 
-        String normalizedEmail = email.trim().toLowerCase();
+    public String loginCustomer(
+            String email,
+            String password) {
 
-        Customer customer = customerRepository.findByEmail(normalizedEmail)
-                .orElseThrow(() ->
-                        new RuntimeException("Invalid email or password!"));
-
-        if (!passwordEncoder.matches(password, customer.getPassword())) {
-            throw new RuntimeException("Invalid email or password!");
+        if (email == null || password == null) {
+            throw new RuntimeException(
+                    "Email and password are required!");
         }
+
+        String normalizedEmail = email
+                .trim()
+                .toLowerCase();
+
+        Customer customer = customerRepository
+                .findByEmailIgnoreCase(normalizedEmail)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Invalid email or password!"));
+
+        if (!passwordEncoder.matches(
+                password,
+                customer.getPassword())) {
+
+            throw new RuntimeException(
+                    "Invalid email or password!");
+        }
+
+        logger.info(
+                "Login successful: Email={}, Role={}",
+                customer.getEmail(),
+                customer.getRole());
 
         return jwtService.generateToken(customer);
     }
 
-    // Get User Role
+    // ================= GET CUSTOMER BY EMAIL =================
+
+    @Transactional(readOnly = true)
+    public Customer getCustomerByEmail(String email) {
+
+        if (email == null || email.trim().isEmpty()) {
+            throw new RuntimeException("Email is required!");
+        }
+
+        String normalizedEmail = email
+                .trim()
+                .toLowerCase();
+
+        return customerRepository
+                .findByEmailIgnoreCase(normalizedEmail)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Customer not found!"));
+    }
+
+    // ================= GET USER ROLE =================
+
+    @Transactional(readOnly = true)
     public String getUserRole(String email) {
 
-        String normalizedEmail = email.trim().toLowerCase();
-
-        Customer customer = customerRepository.findByEmail(normalizedEmail)
-                .orElseThrow(() ->
-                        new RuntimeException("Customer not found!")
-                );
+        Customer customer =
+                getCustomerByEmail(email);
 
         return customer.getRole();
     }
 
-    // Forgot Password - Send OTP
+    // ================= FORGOT PASSWORD =================
+
     public void sendPasswordResetOTP(String email) {
 
-        String normalizedEmail = email.trim().toLowerCase();
+        if (email == null || email.trim().isEmpty()) {
+            throw new RuntimeException("Email is required!");
+        }
 
-        Customer customer = customerRepository.findByEmail(normalizedEmail)
-                .orElseThrow(() ->
-                        new RuntimeException("Customer not found!"));
+        String normalizedEmail = email
+                .trim()
+                .toLowerCase();
 
-        String otp = otpService.generateOTP(normalizedEmail);
+        logger.info(
+                "Forgot Password request: {}",
+                normalizedEmail);
 
-        emailService.sendOtpEmail(normalizedEmail, otp);
+        Customer customer = customerRepository
+                .findByEmailIgnoreCase(normalizedEmail)
+                .orElseThrow(() -> {
+
+                    logger.error(
+                            "Customer not found: {}",
+                            normalizedEmail);
+
+                    return new RuntimeException(
+                            "Customer not found!");
+                });
+
+        String otp =
+                otpService.generateOTP(normalizedEmail);
+
+        emailService.sendOtpEmail(
+                normalizedEmail,
+                otp);
+
+        logger.info(
+                "OTP email sent to {}",
+                normalizedEmail);
     }
 
-    // Verify OTP
-    public boolean verifyPasswordResetOTP(String email, String otp) {
+    // ================= VERIFY OTP =================
 
-        String normalizedEmail = email.trim().toLowerCase();
+    public boolean verifyPasswordResetOTP(
+            String email,
+            String otp) {
+
+        if (email == null || otp == null) {
+            throw new RuntimeException(
+                    "Email and OTP are required!");
+        }
+
+        String normalizedEmail = email
+                .trim()
+                .toLowerCase();
 
         boolean verified = otpService.verifyOTP(
                 normalizedEmail,
-                otp
-        );
+                otp);
 
         if (!verified) {
-            throw new RuntimeException("Invalid or expired OTP!");
+            throw new RuntimeException(
+                    "Invalid or expired OTP!");
         }
 
         verifiedEmails.put(
                 normalizedEmail,
-                LocalDateTime.now().plusMinutes(5)
-        );
+                LocalDateTime.now().plusMinutes(5));
+
+        logger.info(
+                "OTP verified successfully for {}",
+                normalizedEmail);
 
         return true;
     }
 
-    // Reset Password
-    public void resetPassword(String email, String newPassword) {
+    // ================= RESET PASSWORD =================
 
-        String normalizedEmail = email.trim().toLowerCase();
+    public void resetPassword(
+            String email,
+            String newPassword) {
 
-        LocalDateTime expiry = verifiedEmails.get(normalizedEmail);
+        if (email == null
+                || newPassword == null
+                || newPassword.trim().isEmpty()) {
 
-        if (expiry == null || LocalDateTime.now().isAfter(expiry)) {
+            throw new RuntimeException(
+                    "Email and new password are required!");
+        }
+
+        String normalizedEmail = email
+                .trim()
+                .toLowerCase();
+
+        LocalDateTime expiry =
+                verifiedEmails.get(normalizedEmail);
+
+        if (expiry == null
+                || LocalDateTime.now().isAfter(expiry)) {
 
             verifiedEmails.remove(normalizedEmail);
 
             throw new RuntimeException(
-                    "Please verify OTP before resetting password!"
-            );
+                    "Please verify OTP before resetting password!");
         }
 
         Customer customer = customerRepository
-                .findByEmail(normalizedEmail)
+                .findByEmailIgnoreCase(normalizedEmail)
                 .orElseThrow(() ->
-                        new RuntimeException("Customer not found!")
-                );
+                        new RuntimeException(
+                                "Customer not found!"));
 
-        String encodedPassword =
-                passwordEncoder.encode(newPassword);
-
-        customer.setPassword(encodedPassword);
+        customer.setPassword(
+                passwordEncoder.encode(newPassword));
 
         customerRepository.save(customer);
 
         verifiedEmails.remove(normalizedEmail);
+
+        logger.info(
+                "Password reset successful for {}",
+                normalizedEmail);
     }
 }
