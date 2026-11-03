@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -76,6 +76,9 @@ public class SecurityConfig {
                     "/api/accounts/*/status"
                 ).hasRole("ADMIN")
 
+                // Public Root Endpoint
+                .requestMatchers("/").permitAll()
+
                 // Remaining APIs require authentication
                 .anyRequest().authenticated()
             )
@@ -98,7 +101,7 @@ public class SecurityConfig {
         // Allowed Frontend Origins
         configuration.setAllowedOrigins(List.of(
             "http://localhost:5173",
-            "https://bank-management-frontend-ten.vercel.app"
+            "https://bank-management-frontend-lyart.vercel.app"
         ));
 
         // Allowed HTTP Methods

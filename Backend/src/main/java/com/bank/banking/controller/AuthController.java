@@ -10,7 +10,10 @@ import com.bank.banking.service.AuthService;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+	    "http://localhost:5173",
+	    "https://bank-management-frontend-lyart.vercel.app"
+	})
 public class AuthController {
 
     private final AuthService authService;
