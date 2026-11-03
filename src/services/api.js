@@ -29,8 +29,9 @@ API.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
+      localStorage.removeItem("customerId");
+      localStorage.removeItem("email");
 
-      // Redirect only if user is currently logged in
       if (window.location.pathname !== "/login") {
         window.location.replace("/login");
       }
