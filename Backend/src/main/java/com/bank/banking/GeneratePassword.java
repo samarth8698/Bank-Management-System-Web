@@ -9,18 +9,10 @@ public class GeneratePassword {
         BCryptPasswordEncoder encoder =
                 new BCryptPasswordEncoder();
 
-        // Admin Password
-        String password = "Samarth@Admin2026";
+        String password = "12345678";
 
-        // Generate BCrypt Hash
         String hash = encoder.encode(password);
 
-        System.out.println("ADMIN PASSWORD: " + password);
-        System.out.println("BCrypt HASH: " + hash);
-
-        // Verify Password
-        boolean match = encoder.matches(password, hash);
-
-        System.out.println("PASSWORD MATCH: " + match);
+        System.out.println("BCrypt Hash: " + hash);
     }
 }

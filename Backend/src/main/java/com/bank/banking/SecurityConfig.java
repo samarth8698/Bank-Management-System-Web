@@ -101,7 +101,8 @@ public class SecurityConfig {
         // Allowed Frontend Origins
         configuration.setAllowedOrigins(List.of(
             "http://localhost:5173",
-            "https://bank-management-frontend-lyart.vercel.app"
+            "https://bank-management-frontend-lyart.vercel.app",
+            "https://bank-management-frontend-50pbws430-todos-list.vercel.app"
         ));
 
         // Allowed HTTP Methods
