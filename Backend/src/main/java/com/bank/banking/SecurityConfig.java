@@ -36,22 +36,17 @@ public class SecurityConfig {
 
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
             .csrf(AbstractHttpConfigurer::disable)
-
             .httpBasic(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
-
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint(
                     new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
                 )
             )
-
             .authorizeHttpRequests(auth -> auth
 
                 // Allow OPTIONS requests
@@ -82,7 +77,6 @@ public class SecurityConfig {
                 // Remaining APIs require authentication
                 .anyRequest().authenticated()
             )
-
             .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
@@ -103,7 +97,8 @@ public class SecurityConfig {
             "http://localhost:5173",
             "https://bank-management-frontend-lyart.vercel.app",
             "https://bank-management-frontend-50pbws430-todos-list.vercel.app",
-            "https://bank-management-system-web-three.vercel.app"
+            "https://bank-management-system-web-three.vercel.app",
+            "https://bank-management-system-ee1aaj7wa-todos-list.vercel.app"
         ));
 
         // Allowed HTTP Methods
