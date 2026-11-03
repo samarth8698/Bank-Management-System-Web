@@ -1,8 +1,19 @@
 import { useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+
+// Authentication
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+
+// Customer Pages
 import Dashboard from "./pages/Dashboard";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
@@ -12,25 +23,58 @@ import ChangePin from "./pages/ChangePin";
 import MyProfile from "./pages/MyProfile";
 import FundTransfer from "./pages/FundTransfer";
 import MiniStatement from "./pages/MiniStatement";
-import ForgotPassword from "./pages/ForgotPassword";
+import AccountOpening from "./pages/AccountOpening";
 
+// Admin Pages
 import AdminDashboard from "./pages/AdminDashboard";
 import CustomerManagement from "./pages/CustomerManagement";
 import AccountManagement from "./pages/AccountManagement";
 import TransactionMonitoring from "./pages/TransactionMonitoring";
 import Analytics from "./pages/Analytics";
 import FailedTransactions from "./pages/FailedTransactions";
-import AccountOpening from "./pages/AccountOpening";
 import AdminAccountOpening from "./pages/AdminAccountOpening";
 
-// Customer Protected Route
-function ProtectedRoute({ children }) {
-  const token = localStorage.getItem("token");
+// ===============================
+// NAVIGATION HANDLER
+// ===============================
 
-  return token ? children : <Navigate to="/login" replace />;
+function NavigationHandler() {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  return null;
 }
 
-// Admin Protected Route
+// ===============================
+// CUSTOMER PROTECTED ROUTE
+// ===============================
+
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (role === "ADMIN") {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
+  if (role !== "CUSTOMER") {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+
+// ===============================
+// ADMIN PROTECTED ROUTE
+// ===============================
+
 function AdminRoute({ children }) {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
@@ -46,41 +90,44 @@ function AdminRoute({ children }) {
   return children;
 }
 
-// Browser Back/Forward Cache Handler
-function BackForwardCacheHandler() {
-  useEffect(() => {
-    const handlePageShow = (event) => {
-      if (event.persisted) {
-        window.location.reload();
-      }
-    };
-
-    window.addEventListener("pageshow", handlePageShow);
-
-    return () => {
-      window.removeEventListener("pageshow", handlePageShow);
-    };
-  }, []);
-
-  return null;
-}
+// ===============================
+// APP
+// ===============================
 
 function App() {
   return (
     <BrowserRouter>
-      <BackForwardCacheHandler />
+      <NavigationHandler />
 
       <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* ROOT */}
 
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/"
+          element={<Navigate to="/login" replace />}
+        />
 
-        <Route path="/register" element={<Register />} />
+        {/* AUTHENTICATION */}
 
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+        {/* Login Route - PublicRoute Removed */}
 
-        {/* Customer Dashboard */}
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword />}
+        />
+
+        {/* CUSTOMER */}
+
         <Route
           path="/dashboard"
           element={
@@ -99,77 +146,6 @@ function App() {
           }
         />
 
-        {/* Admin Dashboard */}
-        <Route
-          path="/admin/dashboard"
-          element={
-            <AdminRoute>
-              <AdminDashboard />
-            </AdminRoute>
-          }
-        />
-
-        {/* Admin Analytics */}
-        <Route
-          path="/admin/analytics"
-          element={
-            <AdminRoute>
-              <Analytics />
-            </AdminRoute>
-          }
-        />
-
-        {/* Admin Failed Transactions */}
-        <Route
-          path="/admin/failed-transactions"
-          element={
-            <AdminRoute>
-              <FailedTransactions />
-            </AdminRoute>
-          }
-        />
-
-        {/* Admin Customer Management */}
-        <Route
-          path="/admin/customers"
-          element={
-            <AdminRoute>
-              <CustomerManagement />
-            </AdminRoute>
-          }
-        />
-
-        {/* Admin Account Management */}
-        <Route
-          path="/admin/accounts"
-          element={
-            <AdminRoute>
-              <AccountManagement />
-            </AdminRoute>
-          }
-        />
-
-        {/* Admin Transaction Monitoring */}
-        <Route
-          path="/admin/transactions"
-          element={
-            <AdminRoute>
-              <TransactionMonitoring />
-            </AdminRoute>
-          }
-        />
-
-        {/* Admin Account Opening */}
-        <Route
-          path="/admin/account-opening"
-          element={
-            <AdminRoute>
-              <AdminAccountOpening />
-            </AdminRoute>
-          }
-        />
-
-        {/* Deposit */}
         <Route
           path="/deposit"
           element={
@@ -179,7 +155,6 @@ function App() {
           }
         />
 
-        {/* Withdraw */}
         <Route
           path="/withdraw"
           element={
@@ -189,7 +164,6 @@ function App() {
           }
         />
 
-        {/* Transaction History */}
         <Route
           path="/transactions"
           element={
@@ -199,7 +173,6 @@ function App() {
           }
         />
 
-        {/* Fast Cash */}
         <Route
           path="/fast-cash"
           element={
@@ -209,7 +182,6 @@ function App() {
           }
         />
 
-        {/* Change PIN */}
         <Route
           path="/change-pin"
           element={
@@ -219,7 +191,6 @@ function App() {
           }
         />
 
-        {/* Fund Transfer */}
         <Route
           path="/fund-transfer"
           element={
@@ -229,7 +200,6 @@ function App() {
           }
         />
 
-        {/* Mini Statement */}
         <Route
           path="/mini-statement"
           element={
@@ -239,7 +209,6 @@ function App() {
           }
         />
 
-        {/* My Profile */}
         <Route
           path="/my-profile"
           element={
@@ -249,8 +218,77 @@ function App() {
           }
         />
 
-        {/* Invalid Route */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* ADMIN */}
+
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/analytics"
+          element={
+            <AdminRoute>
+              <Analytics />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/failed-transactions"
+          element={
+            <AdminRoute>
+              <FailedTransactions />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/customers"
+          element={
+            <AdminRoute>
+              <CustomerManagement />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/accounts"
+          element={
+            <AdminRoute>
+              <AccountManagement />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/transactions"
+          element={
+            <AdminRoute>
+              <TransactionMonitoring />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/account-opening"
+          element={
+            <AdminRoute>
+              <AdminAccountOpening />
+            </AdminRoute>
+          }
+        />
+
+        {/* INVALID ROUTE */}
+
+        <Route
+          path="*"
+          element={<Navigate to="/login" replace />}
+        />
       </Routes>
     </BrowserRouter>
   );

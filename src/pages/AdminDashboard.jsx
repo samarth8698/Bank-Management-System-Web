@@ -29,7 +29,8 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Fetch Dashboard Statistics
+  // ================= FETCH DASHBOARD =================
+
   const fetchDashboard = async () => {
     try {
       setLoading(true);
@@ -42,7 +43,8 @@ const AdminDashboard = () => {
       console.error("Admin Dashboard Error:", err);
 
       setError(
-        err.response?.data?.message || "Unable to load dashboard statistics.",
+        err.response?.data?.message ||
+          "Unable to load dashboard statistics."
       );
     } finally {
       setLoading(false);
@@ -53,15 +55,16 @@ const AdminDashboard = () => {
     fetchDashboard();
   }, []);
 
-  // Logout
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
+  // ================= LOGOUT =================
 
-    navigate("/login", { replace: true });
+  const handleLogout = () => {
+    localStorage.clear();
+
+    window.location.replace("/login");
   };
 
-  // Currency Formatter
+  // ================= CURRENCY FORMATTER =================
+
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -70,7 +73,8 @@ const AdminDashboard = () => {
     }).format(Number(amount || 0));
   };
 
-  // Statistics Cards
+  // ================= STATISTICS CARDS =================
+
   const cards = [
     {
       title: "Total Customers",
@@ -128,7 +132,8 @@ const AdminDashboard = () => {
     },
   ];
 
-  // Management Cards
+  // ================= MANAGEMENT CARDS =================
+
   const managementCards = [
     {
       title: "Customer Management",
@@ -166,7 +171,6 @@ const AdminDashboard = () => {
       path: "/admin/analytics",
       action: "View Analytics",
     },
-
     {
       title: "Account Opening Requests",
       description:
@@ -189,13 +193,15 @@ const AdminDashboard = () => {
     },
   ];
 
+  // ================= UI =================
+
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* ================= HEADER ================= */}
+
+      {/* HEADER */}
 
       <header className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          {/* Logo */}
 
           <div className="flex items-center gap-3">
             <div className="bg-blue-700 p-3 rounded-xl">
@@ -203,13 +209,17 @@ const AdminDashboard = () => {
             </div>
 
             <div>
-              <h1 className="text-xl font-bold text-slate-900">SecureBank</h1>
+              <h1 className="text-xl font-bold text-slate-900">
+                SecureBank
+              </h1>
 
-              <p className="text-xs text-slate-500">Administration Panel</p>
+              <p className="text-xs text-slate-500">
+                Administration Panel
+              </p>
             </div>
           </div>
 
-          {/* Admin Actions */}
+          {/* ADMIN ACTIONS */}
 
           <div className="flex items-center gap-4">
             <span className="hidden sm:flex items-center gap-2 text-sm font-medium text-slate-600">
@@ -228,10 +238,11 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      {/* ================= MAIN CONTENT ================= */}
+      {/* MAIN CONTENT */}
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Dashboard Heading */}
+
+        {/* DASHBOARD HEADING */}
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
@@ -253,12 +264,15 @@ const AdminDashboard = () => {
             disabled={loading}
             className="flex items-center justify-center gap-2 bg-blue-700 text-white px-5 py-3 rounded-xl hover:bg-blue-800 transition disabled:opacity-50"
           >
-            <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
+            <RefreshCw
+              size={18}
+              className={loading ? "animate-spin" : ""}
+            />
             Refresh Data
           </button>
         </div>
 
-        {/* ================= ERROR MESSAGE ================= */}
+        {/* ERROR MESSAGE */}
 
         {error && (
           <div className="mb-6 bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl">
@@ -273,15 +287,18 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        {/* ================= LOADING ================= */}
+        {/* LOADING */}
 
         {loading ? (
           <div className="flex justify-center items-center py-24">
-            <RefreshCw className="animate-spin text-blue-700" size={36} />
+            <RefreshCw
+              className="animate-spin text-blue-700"
+              size={36}
+            />
           </div>
         ) : stats ? (
           <>
-            {/* ================= STATISTICS ================= */}
+            {/* STATISTICS */}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {cards.map((card) => {
@@ -316,7 +333,7 @@ const AdminDashboard = () => {
               })}
             </div>
 
-            {/* ================= MANAGEMENT SECTION ================= */}
+            {/* MANAGEMENT SECTION */}
 
             <div className="mt-10">
               <div className="flex items-center justify-between mb-5">
@@ -333,7 +350,7 @@ const AdminDashboard = () => {
                 <Settings className="text-slate-400" size={22} />
               </div>
 
-              {/* Management Cards */}
+              {/* MANAGEMENT CARDS */}
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {managementCards.map((card) => {
@@ -374,7 +391,7 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* ================= SYSTEM INFORMATION ================= */}
+            {/* SYSTEM INFORMATION */}
 
             <div className="mt-10 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-3 mb-5">
@@ -402,7 +419,9 @@ const AdminDashboard = () => {
                       Admin Authentication
                     </p>
 
-                    <p className="font-semibold text-green-700">Active</p>
+                    <p className="font-semibold text-green-700">
+                      Active
+                    </p>
                   </div>
                 </div>
 
@@ -414,7 +433,9 @@ const AdminDashboard = () => {
                       Dashboard Statistics
                     </p>
 
-                    <p className="font-semibold text-blue-700">Live Data</p>
+                    <p className="font-semibold text-blue-700">
+                      Live Data
+                    </p>
                   </div>
                 </div>
               </div>
@@ -427,7 +448,7 @@ const AdminDashboard = () => {
         )}
       </main>
 
-      {/* ================= FOOTER ================= */}
+      {/* FOOTER */}
 
       <footer className="border-t border-slate-200 bg-white mt-10">
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col sm:flex-row justify-between items-center gap-2">

@@ -45,21 +45,14 @@ function Login() {
         password: formData.password,
       };
 
-      const response = await API.post(
-        "/auth/login",
-        loginData
-      );
-
-      // ================= LOGIN RESPONSE =================
+      const response = await API.post("/auth/login", loginData);
 
       const data = response.data;
 
       console.log("========== LOGIN RESPONSE ==========");
       console.log("FULL RESPONSE:", data);
-      console.log("TOKEN:", data.token);
       console.log("ROLE:", data.role);
       console.log("CUSTOMER ID:", data.customerId);
-      console.log("EMAIL:", data.email);
       console.log("===================================");
 
       const token = data.token;
@@ -74,37 +67,22 @@ function Login() {
       // ================= VALIDATION =================
 
       if (!token) {
-        throw new Error(
-          "Authentication token not received!"
-        );
+        throw new Error("Authentication token not received!");
       }
 
-      if (!role) {
-        throw new Error(
-          "User role not received from backend!"
-        );
-      }
-
-      if (
-        role !== "ADMIN" &&
-        role !== "CUSTOMER"
-      ) {
-        throw new Error(
-          `Invalid user role received: ${role}`
-        );
+      if (role !== "ADMIN" && role !== "CUSTOMER") {
+        throw new Error(`Invalid user role: ${role}`);
       }
 
       // ================= CLEAR OLD SESSION =================
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("customerId");
-      localStorage.removeItem("email");
+      localStorage.clear();
 
       // ================= SAVE NEW SESSION =================
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
+      localStorage.setItem("email", email);
 
       if (customerId != null) {
         localStorage.setItem(
@@ -113,51 +91,23 @@ function Login() {
         );
       }
 
-      localStorage.setItem("email", email);
-
-      // ================= SUCCESS MESSAGE =================
-
-      setMessage("Login successful!");
-
-      // ================= ADMIN REDIRECT =================
+      // ================= REDIRECT =================
 
       if (role === "ADMIN") {
-        console.log("Redirecting to ADMIN Dashboard");
-
-        navigate("/admin/dashboard", {
-          replace: true,
-        });
-
-        return;
-      }
-
-      // ================= CUSTOMER REDIRECT =================
-
-      if (role === "CUSTOMER") {
-        console.log("Redirecting to CUSTOMER Dashboard");
-
-        navigate("/dashboard", {
-          replace: true,
-        });
-
-        return;
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/dashboard");
       }
 
     } catch (error) {
-      console.error("========== LOGIN ERROR ==========");
-      console.error(error);
-      console.error("================================");
+      console.error("LOGIN ERROR:", error);
 
-      // Clear invalid session
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("customerId");
-      localStorage.removeItem("email");
+      localStorage.clear();
 
       setMessage(
         error.response?.data?.message ||
-        error.message ||
-        "Invalid email or password!"
+          error.message ||
+          "Invalid email or password!"
       );
 
     } finally {
@@ -169,28 +119,20 @@ function Login() {
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
-
       <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden grid md:grid-cols-2">
 
         {/* LEFT SIDE */}
 
         <div className="hidden md:flex flex-col justify-between bg-blue-800 text-white p-12">
-
           <div>
-
             <div className="flex items-center gap-3">
-
               <div className="bg-white p-3 rounded-xl">
-                <Landmark
-                  size={30}
-                  className="text-blue-800"
-                />
+                <Landmark size={30} className="text-blue-800" />
               </div>
 
               <h2 className="text-2xl font-bold">
                 SecureBank
               </h2>
-
             </div>
 
             <h1 className="text-4xl font-bold mt-20 leading-tight">
@@ -203,36 +145,24 @@ function Login() {
               Manage your accounts, transfer money and track
               your transactions securely from anywhere.
             </p>
-
           </div>
 
           <div className="flex items-center gap-3 text-blue-100">
-
             <ShieldCheck size={24} />
 
             <span className="text-sm">
               Your security is our priority.
             </span>
-
           </div>
-
         </div>
 
         {/* RIGHT SIDE */}
 
         <div className="p-8 md:p-12">
-
           <div className="flex justify-center md:justify-start mb-8">
-
             <div className="bg-blue-100 p-4 rounded-2xl">
-
-              <Landmark
-                size={35}
-                className="text-blue-700"
-              />
-
+              <Landmark size={35} className="text-blue-700" />
             </div>
-
           </div>
 
           <h1 className="text-3xl font-bold text-slate-800">
@@ -257,21 +187,15 @@ function Login() {
             onSubmit={handleSubmit}
             className="mt-8 space-y-6"
           >
-
             {/* EMAIL */}
 
             <div>
-
               <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Email Address
               </label>
 
               <div className="flex items-center border border-gray-300 rounded-xl px-4 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100">
-
-                <Mail
-                  size={20}
-                  className="text-gray-400"
-                />
+                <Mail size={20} className="text-gray-400" />
 
                 <input
                   type="email"
@@ -282,25 +206,18 @@ function Login() {
                   className="w-full p-4 outline-none bg-transparent"
                   required
                 />
-
               </div>
-
             </div>
 
             {/* PASSWORD */}
 
             <div>
-
               <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Password
               </label>
 
               <div className="flex items-center border border-gray-300 rounded-xl px-4 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100">
-
-                <Lock
-                  size={20}
-                  className="text-gray-400"
-                />
+                <Lock size={20} className="text-gray-400" />
 
                 <input
                   type="password"
@@ -311,22 +228,18 @@ function Login() {
                   className="w-full p-4 outline-none bg-transparent"
                   required
                 />
-
               </div>
-
             </div>
 
             {/* FORGOT PASSWORD */}
 
             <div className="flex justify-end -mt-3">
-
               <Link
                 to="/forgot-password"
                 className="text-sm text-blue-700 font-semibold hover:underline"
               >
                 Forgot Password?
               </Link>
-
             </div>
 
             {/* LOGIN BUTTON */}
@@ -336,21 +249,15 @@ function Login() {
               disabled={loading}
               className="w-full flex items-center justify-center gap-3 bg-blue-700 hover:bg-blue-800 disabled:bg-blue-400 text-white py-4 rounded-xl font-semibold transition duration-300 shadow-lg shadow-blue-200"
             >
-
-              {loading
-                ? "Logging in..."
-                : "Login to Account"}
+              {loading ? "Logging in..." : "Login to Account"}
 
               <ArrowRight size={20} />
-
             </button>
-
           </form>
 
           {/* REGISTER */}
 
           <p className="text-center text-gray-600 mt-8">
-
             Don't have an account?
 
             <Link
@@ -359,7 +266,6 @@ function Login() {
             >
               Register Now
             </Link>
-
           </p>
 
           {/* FOOTER */}
@@ -367,11 +273,8 @@ function Login() {
           <div className="mt-10 text-center text-xs text-gray-400">
             © 2026 SecureBank. All Rights Reserved.
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }
