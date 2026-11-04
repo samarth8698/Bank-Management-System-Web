@@ -94,9 +94,13 @@ The backend connects to TiDB Cloud using JDBC.
 # Example configuration:-
 
 #  properties:-
+
 spring.datasource.url=${DATABASE_URL}
+
 spring.datasource.username=${DATABASE_USERNAME}
+
 spring.datasource.password=${DATABASE_PASSWORD}
+
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
 
