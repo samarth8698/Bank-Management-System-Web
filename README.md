@@ -1,6 +1,10 @@
 # 🏦 Bank Management System Web – SecureBank #
 
+
+
 A full-stack banking application built using **React.js, Spring Boot, Java, and TiDB Cloud**. SecureBank provides secure banking operations for customers and a dedicated administration panel for managing customers, accounts, and transactions.
+
+
 
 Technologies :-
     Java | Spring Boot | React.js | SQL | REST APIs | JWT
@@ -13,6 +17,8 @@ Technologies :-
 | Backend Health    | [Health Check](https://bank-management-system-web.onrender.com/health) |
 
 
+
+
  📌 Project Overview:-
  
 SecureBank is a web-based Bank Management System designed to simplify banking operations.
@@ -20,6 +26,7 @@ SecureBank is a web-based Bank Management System designed to simplify banking op
 The application supports customer registration, authentication, account management, deposits, withdrawals, transaction history, and administrative operations through a modern responsive interface.
 
 The project follows a full-stack architecture with a React frontend, Spring Boot REST API backend, and a MySQL-compatible TiDB Cloud database.
+
 
 
 ✨ Features:-
@@ -34,6 +41,7 @@ The project follows a full-stack architecture with a React frontend, Spring Boot
   - Secure REST API Endpoints
 
 
+
     👤 Customer Features:-
 - Customer Dashboard
 - Bank Account Opening
@@ -43,6 +51,7 @@ The project follows a full-stack architecture with a React frontend, Spring Boot
 - Transaction History
 - Account Balance Monitoring
 - Profile Management
+
 
 
    🛠️ Admin Features:-
@@ -55,6 +64,7 @@ The project follows a full-stack architecture with a React frontend, Spring Boot
 - Dashboard Statistics
 
 
+
      📊 Dashboard Statistics:-
 - Total Customers
 - Total Accounts
@@ -62,6 +72,7 @@ The project follows a full-stack architecture with a React frontend, Spring Boot
 - Total Deposits
 - Total Withdrawals
 - Total Transactions
+
 
 
    🧰 Technology Stack:-
@@ -74,6 +85,7 @@ The project follows a full-stack architecture with a React frontend, Spring Boot
 - React Router
 - Vite
 
+
 # Backend:-
 - Java
 - Spring Boot
@@ -83,15 +95,18 @@ The project follows a full-stack architecture with a React frontend, Spring Boot
 - Maven
 - RESTful APIs
 
+
 # Database:-
 - TiDB Cloud
 - MySQL Compatible Database
 - SQL
 
+
 # Deployment:-
 - Vercel – Frontend Hosting
 - Render – Backend Hosting
 - TiDB Cloud – Database Hosting
+
 
 
 # 🏗️ System Architecture:-
@@ -120,6 +135,7 @@ The project follows a full-stack architecture with a React frontend, Spring Boot
                   │    TiDB Cloud      │
                   │  MySQL Compatible  │
                   └─────────────────────┘
+
 
 
 # 📂 Project Structure:-
@@ -167,14 +183,19 @@ Bank-Management-System-Web/
 └── README.md
 
 
+
 #🗄️ Database Design:-
 -The application uses **TiDB Cloud**, a MySQL-compatible database platform.
+
+
 
 
 # Main Entities:-
 - Customer
 - Account
 - Transaction
+
+
 
 # Database Operations:-
 - Customer Registration Records
@@ -185,15 +206,16 @@ Bank-Management-System-Web/
 - Transaction History
 
 
+
 #🔗 Backend API:-
-      # API Base URL:-
+    # API Base URL:-
               -https://bank-management-system-web.onrender.com/api
 
-
-# Health Check Endpoint:-
-  -GET /health
+   # Health Check Endpoint:-
+              -GET /health
 
 The health endpoint verifies backend availability.
+
 
 
 #⚙️ Installation & Setup:-
@@ -205,11 +227,13 @@ The health endpoint verifies backend availability.
             - MySQL-compatible Database
 
 
+
 # 1. Clone Repository:-
 
 git clone https://github.com/samarth8698/Bank-Management-System-Web.git
 
           cd Bank-Management-System-Web
+
 
 
 # 2. Backend Setup:-
@@ -231,6 +255,7 @@ Backend runs at:-
         http://localhost:8080
 
 
+
 # 3. Frontend Setup:-
   Navigate to the frontend directory:-
 
@@ -249,12 +274,15 @@ Frontend runs at:-
         http://localhost:5173
 
 
+
 # 4. Database Setup:-
 
 - Create a MySQL-compatible database.
 - Configure database connection details.
 - Configure database credentials securely.
 - Start the backend application.
+
+
 
 
 # 🔒 Security:-
@@ -270,6 +298,8 @@ Frontend runs at:-
 * Never commit database passwords, JWT secrets, or private credentials to GitHub. *
 
 
+
+
 # 🚀 Deployment:-
 
 |  Service |   Platform |
@@ -279,6 +309,7 @@ Frontend runs at:-
 | Database | TiDB Cloud |
 
 The frontend communicates with the backend through REST APIs, while the backend manages banking operations and database interactions.
+
 
 
 # 👨‍💻 Developer:-    *Samarth Subhash Adhao*
