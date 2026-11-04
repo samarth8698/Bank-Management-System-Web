@@ -1,16 +1,152 @@
-# React + Vite
+# Bank Management System - Frontend #
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
-Currently, two official plugins are available:
+A modern, responsive, and user-friendly frontend for the **Bank Management System Web Application**, built using React.js and Vite. The application communicates with the Spring Boot backend through REST APIs and provides secure banking operations for customers and administrators.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+# 🚀 Live Demo:-
 
-## Expanding the Oxlint configuration
+  Frontend:- [Bank Management System](https://bank-management-system-web-three.vercel.app/)
+  
+  Backend API (Health):- [Health Check](https://bank-management-system-web.onrender.com/health)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+
+
+# ✨ Features:-
+
+# Customer Features:-
+- User Registration
+- Secure Login and Authentication
+- Customer Dashboard
+- Account Opening
+- Account Details
+- Deposit Money
+- Withdraw Money
+- Transaction History
+- Account Balance Overview
+
+
+# Admin Features:-
+- Admin Dashboard
+- Customer Management
+- Account Management
+- Transaction Management
+- Banking Statistics
+- Total Customers and Accounts Overview
+- Deposit and Withdrawal Statistics
+
+
+# UI Features:-
+- Responsive User Interface
+- React Component-Based Architecture
+- REST API Integration
+- Dynamic Dashboard
+- Interactive Tables
+- User-Friendly Navigation
+
+
+
+# 🛠️ Technologies Used:-
+
+- React.js
+- JavaScript
+- Vite
+- Axios
+- React Router
+- CSS
+- HTML5
+
+
+
+# 🏗️ Application Architecture:-
+
+React Frontend
+      |
+      | REST API (HTTP)
+      |
+Spring Boot Backend
+      |
+      | JPA / Hibernate
+      |
+MySQL Compatible Database
+
+
+
+# 📂 Project Structure:-
+
+Frontend/
+│
+├── public/
+│
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── assets/
+│   ├── App.jsx
+│   └── main.jsx
+│
+├── package.json
+├── vite.config.js
+└── README.md
+
+
+
+# ⚙️ Installation and Setup:-
+
+# 1. Clone the Repository:-
+   git clone https://github.com/samarth8698/Bank-Management-System-Web.git
+
+
+# 2. Navigate to Frontend:-
+   cd Bank-Management-System-Web/Frontend
+
+
+# 3. Install Dependencies:-
+   npm install
+
+
+# 4. Start Development Server:-
+   npm run dev
+
+
+
+Frontend will run at:-
+        http://localhost:5173
+
+
+
+
+# 🔗 Backend Integration:-
+   The frontend communicates with the Spring Boot backend using REST APIs.
+
+
+
+Backend Base URL:-
+          https://bank-management-system-web.onrender.com/api
+
+API requests are managed using Axios.
+
+
+
+# 🌐 Deployment:-
+
+The frontend is deployed using Vercel.
+
+- Automatic deployment from GitHub
+- Production build using Vite
+- REST API integration with deployed backend
+
+
+
+# 🔐 Security:-
+
+- Authentication-based access
+- Protected application pages
+- Secure communication with backend APIs
+- Role-based customer and admin functionality
+
+
+
+# 👨‍💻 Developer:-      Samarth Subhash Adhao
