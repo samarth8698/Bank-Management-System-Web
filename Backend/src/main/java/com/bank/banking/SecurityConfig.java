@@ -24,7 +24,9 @@ public class SecurityConfig {
 
     private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(JWTAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(
+            JWTAuthenticationFilter jwtAuthenticationFilter) {
+
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
@@ -35,25 +37,33 @@ public class SecurityConfig {
             throws Exception {
 
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .cors(cors -> cors
+                .configurationSource(corsConfigurationSource())
+            )
             .csrf(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
+
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
+
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint(
                     new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
                 )
             )
+
             .authorizeHttpRequests(auth -> auth
 
-                // Allow OPTIONS requests
+                // Allow OPTIONS Requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                 // Allow Error Endpoint
                 .requestMatchers("/error").permitAll()
+
+                // Public Health Endpoint
+                .requestMatchers("/health").permitAll()
 
                 // Public Authentication APIs
                 .requestMatchers("/api/auth/**").permitAll()
@@ -74,9 +84,10 @@ public class SecurityConfig {
                 // Public Root Endpoint
                 .requestMatchers("/").permitAll()
 
-                // Remaining APIs require authentication
+                // Remaining APIs Require Authentication
                 .anyRequest().authenticated()
             )
+
             .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
