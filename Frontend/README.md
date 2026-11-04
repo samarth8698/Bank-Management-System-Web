@@ -7,9 +7,9 @@ A modern, responsive, and user-friendly frontend for the **Bank Management Syste
 
 # 🚀 Live Demo:-
 
-  Frontend:- [Bank Management System](https://bank-management-system-web-three.vercel.app/)
+  Frontend:- https://bank-management-system-web-three.vercel.app/
   
-  Backend API (Health):- [Health Check](https://bank-management-system-web.onrender.com/health)
+  Backend API (Health):- https://bank-management-system-web.onrender.com/health
 
 
 
