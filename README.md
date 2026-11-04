@@ -9,7 +9,6 @@ Technologies :-
 ## 🌐 Live Application :-
 
 | Frontend          | [SecureBank Web Application](https://bank-management-system-web-three.vercel.app) |
-| Backend           | [Spring Boot Backend](https://bank-management-system-web.onrender.com) |
 | Backend Health    | [Health Check](https://bank-management-system-web.onrender.com/health) |
 
 
