@@ -9,11 +9,7 @@ The backend handles authentication, customer management, bank accounts, transact
 
 # 🚀 Live Backend:-
 
-Backend URL:-
-      https://bank-management-system-web.onrender.com
-
-
-Health Check:-
+Backend URL (Health Check):-
       https://bank-management-system-web.onrender.com/health
 
 
