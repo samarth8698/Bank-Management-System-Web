@@ -36,13 +36,17 @@ public class AdminService {
     // Dashboard Statistics
     public Map<String, Object> getDashboardStatistics() {
 
-        long totalCustomers = customerRepository.countByRole("CUSTOMER");
+        long totalCustomers =
+                customerRepository.countByRole("CUSTOMER");
 
-        long totalAccounts = accountRepository.count();
+        long totalAccounts =
+                accountRepository.count();
 
-        long totalTransactions = transactionRepository.count();
+        long totalTransactions =
+                transactionRepository.count();
 
-        BigDecimal totalBalance = accountRepository.getTotalBalance();
+        BigDecimal totalBalance =
+                accountRepository.getTotalBalance();
 
         BigDecimal totalDeposits =
                 transactionRepository.getTotalByTransactionType("DEPOSIT");
@@ -62,19 +66,24 @@ public class AdminService {
 
     // Get All Customers
     public List<Customer> getAllCustomers() {
+
         return customerRepository.findAll()
                 .stream()
-                .filter(customer -> "CUSTOMER".equalsIgnoreCase(customer.getRole()))
+                .filter(customer ->
+                        "CUSTOMER".equalsIgnoreCase(customer.getRole()))
                 .toList();
     }
 
     // Get All Accounts
     public List<Account> getAllAccounts() {
+
         return accountRepository.findAll();
     }
 
     // Get All Transactions
     public List<Transaction> getAllTransactions() {
-        return transactionRepository.findAllByOrderByTransactionDateDesc();
+
+        return transactionRepository
+                .findAllByOrderByTransactionDateDesc();
     }
 }

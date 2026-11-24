@@ -11,12 +11,20 @@ import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
+    // Find Transactions By Account ID
     List<Transaction> findByAccountId(Long accountId);
 
+    // Find Transactions By Account ID - Latest First
     List<Transaction> findByAccountIdOrderByTransactionDateDesc(Long accountId);
 
+    // Find All Transactions - Latest First
     List<Transaction> findAllByOrderByTransactionDateDesc();
 
-    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.transactionType = :type")
+    // Total Amount By Transaction Type
+    @Query("""
+        SELECT COALESCE(SUM(t.amount), 0)
+        FROM Transaction t
+        WHERE t.transactionType = :type
+    """)
     BigDecimal getTotalByTransactionType(@Param("type") String type);
 }
